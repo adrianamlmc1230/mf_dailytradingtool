@@ -108,12 +108,10 @@ def write_record_block(worksheet, row_start: int, record: dict[str, Any], sheet_
         write_cell(worksheet, row_start, "m_marker", "M")
     write_cell(worksheet, row_start, "rx_label", "R-X")
     write_cell(worksheet, row_start, "time_first_handicap", record.get("time_first_handicap", ""))
-    if sheet_title == "handicap":
-        write_cell(worksheet, row_start, "league_handicap", record.get("league_handicap", ""))
+    write_cell(worksheet, row_start, "league_handicap", record.get("league_handicap", ""))
     write_cell(worksheet, row_start, "rx_value", record.get("rx_value", ""))
     write_cell(worksheet, row_start, "time_first_odds", record.get("time_first_odds", ""))
-    if sheet_title == "handicap":
-        write_cell(worksheet, row_start, "league_odds", record.get("league_odds", ""))
+    write_cell(worksheet, row_start, "league_odds", record.get("league_odds", ""))
     write_cell(worksheet, row_start, "ex_label", "E-X")
     write_cell(worksheet, row_start, "time_second_handicap", record.get("time_second_handicap", ""))
     write_cell(worksheet, row_start, "score_compact", record.get("score_compact", ""))

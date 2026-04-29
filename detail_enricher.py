@@ -275,8 +275,8 @@ def build_match_detail_snapshot(
         rx_value = calculate_segment_x(detail_rows, rate_key, {"早", "即"})
         ex_numeric = calculate_segment_x(detail_rows, rate_key, {"早"})
         ex_value = f"{ex_prefix}{ex_numeric}" if ex_numeric != "" and ex_prefix else ex_numeric
-        league_handicap = ""
-        league_odds = ""
+        league_handicap = handicap_value(early_last)
+        league_odds = odds_value(early_last)
     else:
         rate_key = pick_hdp_rate_key(match, detail_rows)
         rx_value = calculate_segment_x(detail_rows, rate_key, {"早", "即"})
