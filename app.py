@@ -17,7 +17,7 @@ from excel_parser import parse_anchor_workbook
 from matcher import build_handicap_matches, build_totals_matches
 from template_exporter import export_template_workbook
 
-LEAGUE_EXCLUDE_PATTERN = re.compile(r"降|升|超冠|盃|友誼|杯")
+LEAGUE_EXCLUDE_PATTERN = re.compile(r"降|升|超冠|盃|友誼|杯|公開")
 
 
 def filter_excluded_leagues(rows: list[dict[str, str]]) -> list[dict[str, str]]:
