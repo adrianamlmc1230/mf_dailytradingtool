@@ -22,23 +22,7 @@ services:
     working_dir: /app
     volumes:
       - mf-dailytradingtool-data:/app
-    command: >
-      bash -c '
-      apt-get update && apt-get install -y git curl &&
-      if [ ! -d /app/.git ]; then
-        git clone https://github.com/adrianamlmc1230/mf_dailytradingtool.git /tmp/repo &&
-        cp -r /tmp/repo/* /tmp/repo/.* /app/ 2>/dev/null || true &&
-        rm -rf /tmp/repo;
-      else
-        cd /app && git fetch origin master && git reset --hard origin/master;
-      fi &&
-      pip install --no-cache-dir -r requirements.txt &&
-      streamlit run app.py
-        --server.port=8601
-        --server.address=0.0.0.0
-        --server.headless=true
-        --browser.gatherUsageStats=false
-      '
+    command: bash -c 'apt-get update && apt-get install -y git curl && if [ ! -d /app/.git ]; then git clone https://github.com/adrianamlmc1230/mf_dailytradingtool.git /tmp/repo && cp -r /tmp/repo/* /tmp/repo/.* /app/ 2>/dev/null || true && rm -rf /tmp/repo; else cd /app && git fetch origin master && git reset --hard origin/master; fi && pip install --no-cache-dir -r requirements.txt && streamlit run app.py --server.port=8601 --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false'
 
 volumes:
   mf-dailytradingtool-data:
