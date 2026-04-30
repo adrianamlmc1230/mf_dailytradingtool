@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-import tempfile
 import traceback
 from datetime import date
-from pathlib import Path
 
 import streamlit as st
 
@@ -48,7 +46,6 @@ def _empty_parse() -> dict[str, object]:
 
 
 def run_pipeline(main_file, sub_file, selected_date: date, update_status, progress_container) -> dict[str, object]:
-    temp_dir = Path(tempfile.mkdtemp(prefix="sports_tool_"))
     clear_detail_cache()
 
     update_status("正在解析Top&Weak表…")
@@ -106,15 +103,9 @@ def run_pipeline(main_file, sub_file, selected_date: date, update_status, progre
         sheet_title="totals",
     )
 
-    handicap_path = temp_dir / "handicap_output.xlsx"
-    totals_path = temp_dir / "totals_output.xlsx"
-    handicap_path.write_bytes(handicap_bytes)
-    totals_path.write_bytes(totals_bytes)
-
     export_date = selected_date.strftime("%Y-%m-%d")
 
     return {
-        "temp_dir": str(temp_dir),
         "main_parse": main_parse,
         "sub_parse": sub_parse,
         "crawl_summary": crawl_summary,
@@ -174,7 +165,6 @@ if result:
     col4, col5 = st.columns(2)
     col4.metric("HDP Matches", result["handicap_export_stats"]["record_count"])
     col5.metric("OU Matches", result["totals_export_stats"]["record_count"])
-    st.caption(f"temporary loc：`{result['temp_dir']}`")
 
     with st.expander("Debug"):
         st.write(
