@@ -47,7 +47,7 @@ def _empty_parse() -> dict[str, object]:
     }
 
 
-def run_pipeline(main_file, sub_file, selected_date: date, update_status) -> dict[str, object]:
+def run_pipeline(main_file, sub_file, selected_date: date, update_status, progress_container) -> dict[str, object]:
     temp_dir = Path(tempfile.mkdtemp(prefix="sports_tool_"))
     clear_detail_cache()
 
@@ -80,17 +80,21 @@ def run_pipeline(main_file, sub_file, selected_date: date, update_status) -> dic
     filtered_handicap_rows = filter_excluded_leagues(handicap_result["combined_rows"])
     filtered_totals_rows = filter_excluded_leagues(totals_result["debug_rows"])
 
-    update_status("正在抓取HDP詳情…")
+    hdp_progress = progress_container.progress(0.0, text="正在抓取HDP詳情…")
     enhanced_handicap_rows, handicap_detail_summary = enrich_records_with_detail(
         filtered_handicap_rows,
         market_type="handicap",
+        progress_callback=lambda pct, label: hdp_progress.progress(pct, text=f"正在抓取HDP詳情… {label}"),
     )
+    hdp_progress.empty()
 
-    update_status("正在抓取OU詳情…")
+    ou_progress = progress_container.progress(0.0, text="正在抓取OU詳情…")
     enhanced_totals_rows, totals_detail_summary = enrich_records_with_detail(
         filtered_totals_rows,
         market_type="totals",
+        progress_callback=lambda pct, label: ou_progress.progress(pct, text=f"正在抓取OU詳情… {label}"),
     )
+    ou_progress.empty()
 
     update_status("正在匯出 Excel…")
     handicap_bytes, handicap_export_stats = export_template_workbook(
@@ -141,11 +145,13 @@ if st.button("開始生成", type="primary", use_container_width=True):
         st.error("請先上傳Top&Weak表 Excel。")
     else:
         try:
+            progress_container = st.container()
             result = run_pipeline(
                 main_file,
                 sub_file,
                 selected_date,
                 update_status=lambda message: status_box.info(message),
+                progress_container=progress_container,
             )
             st.session_state.generated_result = result
             status_box.success("匯出完成")

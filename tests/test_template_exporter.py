@@ -12,10 +12,12 @@ from template_exporter import resolve_template_path
 
 
 class ResolveTemplatePathTests(unittest.TestCase):
-    def test_handicap_and_totals_share_the_same_template_file(self) -> None:
-        expected = PROJECT_ROOT / "新版Daily Trading_Demo.xlsx"
-
+    def test_handicap_resolves_to_hdp_template(self) -> None:
+        expected = PROJECT_ROOT / "Daily Trading_HDP_Demo.xlsx"
         self.assertEqual(resolve_template_path("handicap"), expected)
+
+    def test_totals_resolves_to_ou_template(self) -> None:
+        expected = PROJECT_ROOT / "Daily Trading_OU_Demo.xlsx"
         self.assertEqual(resolve_template_path("totals"), expected)
 
 

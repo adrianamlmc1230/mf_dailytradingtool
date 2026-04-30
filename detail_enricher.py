@@ -369,11 +369,16 @@ def clear_detail_cache() -> None:
     fetch_match_detail_snapshot.cache_clear()
 
 
-def enrich_records_with_detail(records: list[dict[str, Any]], market_type: str) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+def enrich_records_with_detail(
+    records: list[dict[str, Any]],
+    market_type: str,
+    progress_callback: Any | None = None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     enriched_records: list[dict[str, Any]] = []
     detail_ready_count = 0
+    total = len(records)
 
-    for record in records:
+    for idx, record in enumerate(records):
         snapshot = fetch_match_detail_snapshot(
             clean_text(record.get("sid", "")),
             clean_text(record.get("homepage_score", "")),
@@ -384,6 +389,11 @@ def enrich_records_with_detail(records: list[dict[str, Any]], market_type: str) 
         if snapshot:
             detail_ready_count += 1
         enriched_records.append(merged)
+
+        if progress_callback is not None and total > 0:
+            progress_callback((idx + 1) / total, f"({idx + 1}/{total})")
+
+        time.sleep(0.3)
 
     summary = {
         "market_type": market_type,
